@@ -17,7 +17,8 @@ import Divider from '@material-ui/core/Divider';
 import DeleteForever from '@material-ui/icons/DeleteForever';
 import Edit from '@material-ui/icons/Edit';
 
-import RegisterDialog from './Components/Modal/RegisterDialog';
+import RegisterDialog from './Components/RegisterDialog/RegisterDialog';
+import DeleteDialog from './Components/DeleteDialog/DeleteDialog';
 
 import api from './Services/Api';
 import logo from './Assets/Images/logo_branca.png';
@@ -25,6 +26,8 @@ import logo from './Assets/Images/logo_branca.png';
 function App() {
 	const [contacts, setContacts] = useState([]);
 	const [open, setOpen] = useState(false);
+	const [openDelete, setOpenDelete] = useState(false);
+	const [deleteName, setDeleteName] = useState('');
 	useEffect(() => {
 		async function loadContacts() {
 			const selector = {
@@ -42,10 +45,18 @@ function App() {
 	function handleCreateContact() {
 		setOpen(true);
 	}
+
 	function handleClose() {
 		setOpen(false);
 	}
 
+	function handleDelete(value) {
+		setDeleteName(value);
+		setOpenDelete(true);
+	}
+	function handleCloseDelete() {
+		setOpenDelete(false);
+	}
 	return (
 		<Container style={{ backgroundColor: '#f5f5f5' }} maxWidth="sm">
 			<Grid
@@ -79,6 +90,12 @@ function App() {
 				</Button>
 			</Grid>
 			<RegisterDialog open={open} handleClose={handleClose} />
+			<DeleteDialog
+				open={openDelete}
+				name={deleteName}
+				handleClose={handleCloseDelete}
+			/>
+
 			{contacts.map(contact => (
 				<Grid
 					style={{ paddingTop: 7, paddingBottom: 7 }}
@@ -179,6 +196,7 @@ function App() {
 								variant="contained"
 								color="secondary"
 								startIcon={<DeleteForever />}
+								onClick={() => handleDelete(contact.name)}
 							>
 								Deletar
 							</Button>
