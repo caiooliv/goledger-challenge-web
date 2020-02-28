@@ -7,6 +7,8 @@ import Divider from '@material-ui/core/Divider';
 import DialogActions from '@material-ui/core/DialogActions';
 import Edit from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import Close from '@material-ui/icons/Close';
 
 import api from '../../Services/Api';
@@ -17,10 +19,9 @@ export default function EditDialog({ open, contact, handleClose }) {
 	const [age, setAge] = useState(0);
 	const [phone, setPhone] = useState('');
 	const [company, setCompany] = useState('');
+	const [openAlertSucess, setOpenAlertSucess] = useState(false);
+	const [openAlertError, setOpenAlertError] = useState(false);
 
-	const handleAge = value => {
-		setAge(parseInt(value));
-	};
 	useEffect(() => {
 		setName(contact.name);
 		setEmail(contact.email);
@@ -28,6 +29,18 @@ export default function EditDialog({ open, contact, handleClose }) {
 		setPhone(contact.phone);
 		setCompany(contact.company);
 	}, [contact]);
+
+	const handleAge = value => {
+		setAge(parseInt(value));
+	};
+	const handleCloseSucess = () => {
+		setOpenAlertSucess(false);
+		window.location.reload();
+	};
+	const handleCloseError = () => {
+		setOpenAlertSucess(false);
+		window.location.reload();
+	};
 
 	async function handleRegister() {
 		await api
@@ -42,11 +55,11 @@ export default function EditDialog({ open, contact, handleClose }) {
 			.then(
 				function(response) {
 					console.log(response);
-					handleClose();
+					setOpenAlertSucess(true);
 				},
 				function(response) {
 					console.log(response);
-					handleClose();
+					setOpenAlertError(true);
 				}
 			);
 	}
@@ -140,6 +153,26 @@ export default function EditDialog({ open, contact, handleClose }) {
 					</Button>
 				</DialogActions>
 			</Dialog>
+
+			<Snackbar
+				open={openAlertSucess}
+				autoHideDuration={3000}
+				onClose={handleCloseSucess}
+			>
+				<MuiAlert onClose={handleCloseSucess} severity="success">
+					Contato editado com sucesso
+				</MuiAlert>
+			</Snackbar>
+
+			<Snackbar
+				open={openAlertError}
+				autoHideDuration={3000}
+				onClose={handleCloseError}
+			>
+				<MuiAlert onClose={handleCloseError} severity="error">
+					Falha na edição do contato
+				</MuiAlert>
+			</Snackbar>
 		</div>
 	);
 }

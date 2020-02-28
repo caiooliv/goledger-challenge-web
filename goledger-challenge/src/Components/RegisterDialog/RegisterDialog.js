@@ -8,6 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import Button from '@material-ui/core/Button';
 import Close from '@material-ui/icons/Close';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import api from '../../Services/Api';
 
 export default function RegisterDialog({ open, handleClose }) {
@@ -16,9 +18,19 @@ export default function RegisterDialog({ open, handleClose }) {
 	const [age, setAge] = useState(0);
 	const [phone, setPhone] = useState('');
 	const [company, setCompany] = useState('');
+	const [openAlertSucess, setOpenAlertSucess] = useState(false);
+	const [openAlertError, setOpenAlertError] = useState(false);
 
 	const handleAge = value => {
 		setAge(parseInt(value));
+	};
+	const handleCloseSucess = () => {
+		setOpenAlertSucess(false);
+		window.location.reload();
+	};
+	const handleCloseError = () => {
+		setOpenAlertSucess(false);
+		window.location.reload();
 	};
 	async function handleRegister() {
 		await api
@@ -33,11 +45,12 @@ export default function RegisterDialog({ open, handleClose }) {
 			.then(
 				function(response) {
 					console.log(response);
-					handleClose();
+					setOpenAlertSucess(true);
 				},
+
 				function(response) {
 					console.log(response);
-					handleClose();
+					setOpenAlertError(true);
 				}
 			);
 	}
@@ -125,6 +138,25 @@ export default function RegisterDialog({ open, handleClose }) {
 					</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				open={openAlertSucess}
+				autoHideDuration={3000}
+				onClose={handleCloseSucess}
+			>
+				<MuiAlert onClose={handleCloseSucess} severity="success">
+					Contato criado com sucesso
+				</MuiAlert>
+			</Snackbar>
+
+			<Snackbar
+				open={openAlertError}
+				autoHideDuration={3000}
+				onClose={handleCloseError}
+			>
+				<MuiAlert onClose={handleCloseError} severity="error">
+					Falha na criação do contato
+				</MuiAlert>
+			</Snackbar>
 		</div>
 	);
 }

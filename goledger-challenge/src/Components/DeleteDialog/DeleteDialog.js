@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,9 +8,22 @@ import DeleteForever from '@material-ui/icons/DeleteForever';
 import Button from '@material-ui/core/Button';
 import Close from '@material-ui/icons/Close';
 import { Typography } from '@material-ui/core';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import api from '../../Services/Api';
 
 export default function DeleteDialog({ open, name, handleClose }) {
+	const [openAlertSucess, setOpenAlertSucess] = useState(false);
+	const [openAlertError, setOpenAlertError] = useState(false);
+
+	const handleCloseSucess = () => {
+		setOpenAlertSucess(false);
+		window.location.reload();
+	};
+	const handleCloseError = () => {
+		setOpenAlertSucess(false);
+		window.location.reload();
+	};
 	async function handleDelete() {
 		const data = {
 			'@assetType': 'contact',
@@ -20,11 +33,11 @@ export default function DeleteDialog({ open, name, handleClose }) {
 		await api.delete('delete', { data }).then(
 			function(response) {
 				console.log(response);
-				handleClose();
+				setOpenAlertSucess(true);
 			},
 			function(response) {
 				console.log(response);
-				handleClose();
+				setOpenAlertError(true);
 			}
 		);
 	}
@@ -90,6 +103,26 @@ export default function DeleteDialog({ open, name, handleClose }) {
 					</Button>
 				</DialogActions>
 			</Dialog>
+
+			<Snackbar
+				open={openAlertSucess}
+				autoHideDuration={3000}
+				onClose={handleCloseSucess}
+			>
+				<MuiAlert onClose={handleCloseSucess} severity="success">
+					Contato excluído com sucesso
+				</MuiAlert>
+			</Snackbar>
+
+			<Snackbar
+				open={openAlertError}
+				autoHideDuration={3000}
+				onClose={handleCloseError}
+			>
+				<MuiAlert onClose={handleCloseError} severity="error">
+					Falha na exclusão do contato
+				</MuiAlert>
+			</Snackbar>
 		</div>
 	);
 }

@@ -69,7 +69,7 @@ function MainPage() {
 		setOpenEdit(false);
 	}
 	return (
-		<Container style={{ backgroundColor: '#f5f5f5' }} maxWidth="sm">
+		<Container style={{ backgroundColor: '#f1f1f1' }} maxWidth="sm">
 			<Grid
 				style={{
 					backgroundColor: '#1f2033',
