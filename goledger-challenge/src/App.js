@@ -19,6 +19,7 @@ import Edit from '@material-ui/icons/Edit';
 
 import RegisterDialog from './Components/RegisterDialog/RegisterDialog';
 import DeleteDialog from './Components/DeleteDialog/DeleteDialog';
+import EditDialog from './Components/EditDialog/EditDialog';
 
 import api from './Services/Api';
 import logo from './Assets/Images/logo_branca.png';
@@ -27,7 +28,9 @@ function App() {
 	const [contacts, setContacts] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [openDelete, setOpenDelete] = useState(false);
+	const [openEdit, setOpenEdit] = useState(false);
 	const [deleteName, setDeleteName] = useState('');
+	const [editContact, setEditContact] = useState({});
 	useEffect(() => {
 		async function loadContacts() {
 			const selector = {
@@ -56,6 +59,14 @@ function App() {
 	}
 	function handleCloseDelete() {
 		setOpenDelete(false);
+	}
+	function handleEdit(value) {
+		setEditContact(value);
+		setOpenEdit(true);
+	}
+
+	function handleCloseEdit() {
+		setOpenEdit(false);
 	}
 	return (
 		<Container style={{ backgroundColor: '#f5f5f5' }} maxWidth="sm">
@@ -94,6 +105,11 @@ function App() {
 				open={openDelete}
 				name={deleteName}
 				handleClose={handleCloseDelete}
+			/>
+			<EditDialog
+				open={openEdit}
+				contact={editContact}
+				handleClose={handleCloseEdit}
 			/>
 
 			{contacts.map(contact => (
@@ -189,6 +205,7 @@ function App() {
 								variant="contained"
 								color="primary"
 								startIcon={<Edit />}
+								onClick={() => handleEdit(contact)}
 							>
 								Editar
 							</Button>
